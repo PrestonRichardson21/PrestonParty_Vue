@@ -1,4 +1,4 @@
-The important files are under the source folder. 
+The modified JS and Vue files are under the src folder. 
 The highlighted answer is accosiated with whos turn it is. 
 Highlighted index is sent to the server.
 This program communicates with a firebase backend. 
