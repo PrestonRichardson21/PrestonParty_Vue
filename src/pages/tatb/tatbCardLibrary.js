@@ -1,0 +1,4 @@
+const badCardLibrary = ["they ask you to venmo them for your portion of the meal even when it's something small", "They're a magician and insist on doing a trick for every new person they meet", "they don't know how to do their laundry", "their voice sounds like they just sucked in helium", `they call their mom "mommy"`]
+const nuetralCardLibrary = ["they still talk about their high school glory days", "they can only sleep on a waterbed", "they wear flip-flops out to clubs", "they play ultimate Frisbee competitively", "they've never left their hometown and never want to", "they have adult braces that are coming off in six months"];
+const goodCardLibrary = ["they look just like your celebrity crush", "they are in your favorite band and write songs about you", "they have a smile that makes you weak in the knees", "they are great at cheering you up when you're down", "they have a famous parent"]
+export { badCardLibrary, nuetralCardLibrary, goodCardLibrary };
