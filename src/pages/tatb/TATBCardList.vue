@@ -5,19 +5,28 @@
             <p>{{ error }}</p>
         </base-dialog>
         <section>
+            <base-button mode="outline" @click="deleteAllAnswers">New Game</base-button>
+            <base-button mode="outline" v-if="!isLoading" @click="loadAnswers(true)">Refresh</base-button>
+                <h2>They are a </h2>
+                <h2 >{{ spinResult }}</h2>
+                <h2>but...</h2>
+            <base-card :style="{ backgroundColor: backgroundColor }" class="backgroundImage">
+            <div class="rule" id="cardResult">
+                <h2>
+                    
+                    
+                
+                 {{ cardResult }}
+                    
+            </h2>
+            </div>
+            </base-card>
+            
             <base-button @click="spin" class="rule" id="spin">Spin</base-button>
-            <div class="rule" id="cardResult">{{ spinResult }} {{ cardResult }}</div>
             <base-card>
-                <div class="controls">
-
-                    <base-button mode="outline" v-if="!isLoading" @click="loadAnswers(true)">Refresh</base-button>
-
-
-
-
-                    <base-button link to="/tatb/answer" v-if="isLoggedIn">Register Answer</base-button>
-                    <base-button mode="outline" @click="deleteAllAnswers">New Game</base-button>
-                </div>
+                    <base-button link to="/tatb/answer" v-if="isLoggedIn">Update Your Answer</base-button>
+                   
+               
 
                 <base-spinner v-if="isLoading"></base-spinner>
                 <!-- hasCoaches is pulled from answers/getters.js and checks if answers is empty -->
@@ -59,7 +68,7 @@ export default {
             error: null,
             cardResult: '',
             spinResult: '',
-
+            backgroundColor: 'lightblue',
             selectedAnswer: null,
         }
     },
@@ -78,9 +87,7 @@ export default {
             return this.$store.getters['answers/answers']
         },
         hasAnswers() {
-
             return !this.isLoading && this.$store.getters['answers/hasAnswers']
-
         },
         isHighlightedUser() {
             const highlightedAnswer = this.filteredAnswers[this.highlightedIndex];
@@ -89,13 +96,14 @@ export default {
         },
 
 
+
     },
     // dispateches the loadAnswers action when the page is loaded "auth!= null"
 
     async created() {
-
-        await this.loadAnswers();
         await this.fetchHighlightedIndex();
+        await this.loadAnswers(true);
+        
     },
     methods: {
         async fetchHighlightedIndex() {
@@ -142,9 +150,12 @@ export default {
             this.error = null;
         },
         async spin() {
+            this.cycleSpinResult();
+            this.cycleBackgroundColors();
+            await delay(2000);
             let result = Math.floor(Math.random() * 10 + 1);
 
-            this.spinResult = "They are a " + result + " but...";
+            this.spinResult =  result ;
             let pick = Math.floor(Math.random() * 3);
 
             if (result >= 1 && result <= 3) {
@@ -154,8 +165,10 @@ export default {
             } else {
                 this.cardResult = badCardLibrary[pick];
             }
+           
+           
             await this.highlightNextCard();
-            await delay(500);
+            // await delay(100);
             this.loadAnswers(true);
         },
         async highlightNextCard() {
@@ -210,18 +223,54 @@ export default {
         async handleButtonClick() {
             await this.loadAnswers();
         },
+        cycleBackgroundColors() {
+            const colors = ['red', 'green', 'grey'];
+            let index = 0;
+            const interval = setInterval(() => {
+                this.backgroundColor = colors[index];
+                index = (index + 1) % colors.length;
+            }, 130); // Change color every 200ms
+
+            setTimeout(() => {
+                clearInterval(interval);
+                this.setFinalBackgroundColor(); // Set the final background color
+            }, 2000); // Cycle colors for 2 seconds
+        },
+        setFinalBackgroundColor() {
+            if (this.spinResult.includes('1') || this.spinResult.includes('2') || this.spinResult.includes('3')) {
+                this.backgroundColor = 'red';
+            } else if (this.spinResult.includes('4') || this.spinResult.includes('5') || this.spinResult.includes('6') || this.spinResult.includes('7')) {
+                this.backgroundColor = 'grey';
+            } else {
+                this.backgroundColor = 'green';
+            }
+        },
+        cycleSpinResult() {
+           
+            let spinResult = 0;
+            const interval = setInterval(() => {
+                this.spinResult = spinResult;
+                spinResult = (spinResult + 1) % 10;
+            }, 80); // Change number every 200ms
+
+            setTimeout(() => {
+                clearInterval(interval);
+                 
+            }, 2000); // Cycle colors for 2 seconds
+        }
 
 
 
 
     },
 
+
 };
 // Helper function to create a delay
 function delay(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
-
+setTimeout('this.loadAnswers(true);', 3000);
 </script>
 <style scoped>
 .rule {
@@ -231,6 +280,7 @@ function delay(ms) {
     align-items: center;
     /* Center vertically */
     height: 5vh;
+    
 }
 
 ul {
@@ -248,4 +298,5 @@ ul {
     background-color: rgba(0, 255, 247, 0.232);
     /* Highlight color */
 }
+
 </style>
