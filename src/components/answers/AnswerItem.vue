@@ -16,7 +16,7 @@ export default {
 
   props: ['id', 'name', 'answer', 'score'],
   methods: {
-    //incrementScore is used to add or subtract points from the score of an answer
+    //incrementScore is used to add or subtract points from the score of an answer.
     async incrementScore(amount) {
       if (this.score + amount < 0 || this.score + amount > 10) {
         return;
